@@ -25,6 +25,7 @@ public class Decrypt {
 //        bytes = encrypted.getBytes();
         BigInteger bigInt;
 //        bigInt = new BigInteger(bytes);
+        
         bigInt = encrypted.modPow(keygen.getPrivateKey(), keygen.getModulus());
         bytes = bigInt.toByteArray();
         String message = new String(bytes);

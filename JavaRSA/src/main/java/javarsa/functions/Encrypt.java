@@ -18,12 +18,12 @@ public class Encrypt {
      *
      * @param keygen Key Generator to be used as the supply for the keys for the encryption
      * @param message Message to be encrypted
-     * @return Encrypted material
+     * @return Encrypted material as BigInteger
      */
-    public static String encrypt(Keygen keygen, String message) {
+    public static BigInteger encrypt(Keygen keygen, String message) {
         byte[] bytes = message.getBytes();
         BigInteger bigInt = new BigInteger(bytes);
         bigInt = bigInt.modPow(keygen.getPublicKey(), keygen.getModulus());
-        return bigInt.toString(16);
+        return bigInt;
     }
 }

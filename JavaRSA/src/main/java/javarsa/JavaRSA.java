@@ -11,6 +11,7 @@ import javarsa.functions.Decrypt;
 import javarsa.functions.Encrypt;
 import javarsa.functions.Help;
 import javarsa.functions.Keygen;
+import javarsa.functions.Base64;
 
 /**
  *
@@ -28,7 +29,8 @@ public class JavaRSA {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Keygen key = null;
-        String ret = null;
+        BigInteger bigInt;
+        String ret;
         Help.help();
         String cmd = scanner.nextLine();
         while (!cmd.equals("quit")) {
@@ -43,13 +45,13 @@ public class JavaRSA {
                 case "encrypt":
                     System.out.print("Encrypt message: ");
                     String message = scanner.nextLine();
-                    ret = Encrypt.encrypt(key, message);
-                    System.out.println(ret);
+                    bigInt = Encrypt.encrypt(key, message);
+                    System.out.println(Base64.encode(bigInt));
                     break;
                 case "decrypt":
                     System.out.print("Decrypt message: ");
                     String encrypted = scanner.nextLine();
-                    ret = Decrypt.decrypt(key, new BigInteger(encrypted,16));
+                    ret = Decrypt.decrypt(key, Base64.decode(encrypted));
                     System.out.println(ret);
                     break;
                 case "help":
