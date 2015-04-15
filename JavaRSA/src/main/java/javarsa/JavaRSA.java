@@ -19,10 +19,13 @@ import javarsa.functions.Base64;
  */
 public class JavaRSA {
 
+    public static final String PRIVATE_FILE_BEGIN = "-----BEGIN RSA PRIVATE KEY-----";
+    public static final String PRIVATE_FILE_END = "-----END RSA PRIVATE KEY-----";
+    
+
     /**
      * Main accepts parameters that make the program perform different
-     * functions.
-     * To-do: Ability to use external keys.
+     * functions. To-do: Ability to use external keys.
      *
      * @param args the command line arguments
      */
@@ -59,7 +62,8 @@ public class JavaRSA {
                         Help.help();
                     } else {
                         Help.help();
-                    }   break;
+                    }
+                    break;
                 default:
                     Help.help();
                     break;

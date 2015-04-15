@@ -23,6 +23,10 @@ public class Encrypt {
     public static BigInteger encrypt(Keygen keygen, String message) {
         byte[] bytes = message.getBytes();
         BigInteger bigInt = new BigInteger(bytes);
+        System.out.println(bigInt.bitLength() +" >< "+ keygen.getModulus().bitLength());
+        if(bigInt.bitLength() > keygen.getModulus().bitLength()) {
+            System.out.println("Error: Message too long! (Message bitsize larger than modulus.)");
+        }
         bigInt = bigInt.modPow(keygen.getPublicKey(), keygen.getModulus());
         return bigInt;
     }
