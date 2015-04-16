@@ -15,6 +15,6 @@ public class Help {
      * Prints information about how to work the program.
      */
     public static void help() {
-        System.out.println("Valid commands are: keygen, encrypt and decrypt");
+        System.out.println("Valid commands are: keygen, encrypt, decrypt, import and export");
     }
 }

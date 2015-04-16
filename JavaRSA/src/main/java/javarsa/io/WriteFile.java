@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javarsa.functions.Base64;
+import javarsa.functions.Keygen;
 
 /**
  * File output functions.
@@ -26,13 +28,25 @@ public class WriteFile {
      * @param file where to write
      * @param key what to write
      */
-    public static void writePrivate(String file, HashMap<String, String> key) {
+    public static void writePrivate(File file, Keygen key) {
         FileWriter fw = openFile(file);
-        String pKey = key.get("key");
+        if (fileError(fw)) {
+            return;
+        }
+        String pKey = Base64.encode(key.getPrivateKey());
         try {
             fw.write(javarsa.JavaRSA.PRIVATE_FILE_BEGIN + "\n");
-            fw.write(pKey);
-            fw.write(javarsa.JavaRSA.PRIVATE_FILE_END + "\n");
+            for (int i = 0; i < pKey.length(); i += 64) {
+                int loppu = i + 64;
+                if (loppu > pKey.length()) {
+                    loppu = pKey.length();
+                }
+                fw.write(pKey.substring(i, loppu));
+                fw.write("\n");
+            }
+            fw.write("\n" + javarsa.JavaRSA.PRIVATE_FILE_END);
+            fw.close();
+            System.out.println(pKey + "\nWritten to " + file);
         } catch (IOException ex) {
             Logger.getLogger(WriteFile.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -40,17 +54,30 @@ public class WriteFile {
 
     /**
      * Writes public key information to file
-     * 
+     *
      * @param file where to write
      * @param key what to write
      */
-    public static void writePublic(String file, String key) {
+    public static void writePublic(File file, Keygen key) {
         FileWriter fw = openFile(file);
+        if (fileError(fw)) {
+            return;
+        }
         try {
-            fw.write(key);
+            fw.write(key.getPublicKey() + " " + Base64.encode(key.getModulus()));
+            fw.close();
+            System.out.println(key.getPublicKey() + " " + Base64.encode(key.getModulus()) + "\nWritten to " + file);
         } catch (IOException ex) {
             Logger.getLogger(WriteFile.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private static boolean fileError(FileWriter fw) {
+        if (fw == null) {
+            System.out.println("File error");
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -59,10 +86,15 @@ public class WriteFile {
      * @param file where to write
      * @param message what to write
      */
-    public static void writeMessage(String file, String message) {
+    public static void writeMessage(File file, String message) {
         FileWriter fw = openFile(file);
+        if (fileError(fw)) {
+            return;
+        }
         try {
             fw.write(message);
+            fw.close();
+            System.out.println(message + "\nWritten to" + file);
         } catch (IOException ex) {
             Logger.getLogger(WriteFile.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -74,14 +106,10 @@ public class WriteFile {
      * @param file file to use
      * @return
      */
-    private static FileWriter openFile(String file) {
+    private static FileWriter openFile(File file) {
         FileWriter kirjoittaja = null;
-        File f = new File(file);
         try {
-            kirjoittaja = new FileWriter(f);
-        } catch (FileNotFoundException ex) {
-            System.out.println("File not found exception: " + ex);
-            Logger.getLogger(ReadFile.class.getName()).log(Level.SEVERE, null, ex);
+            kirjoittaja = new FileWriter(file);
         } catch (IOException ex) {
             Logger.getLogger(WriteFile.class.getName()).log(Level.SEVERE, null, ex);
         }

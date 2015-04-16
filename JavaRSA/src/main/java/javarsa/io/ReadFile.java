@@ -7,10 +7,13 @@ package javarsa.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javarsa.functions.Base64;
+import javarsa.functions.Keygen;
 
 /**
  * File importing functions.
@@ -20,47 +23,73 @@ import java.util.logging.Logger;
 public class ReadFile {
 
     /**
-     * Fetches private key from file
+     * Fetches private key from file to new Keygen
      *
      * @param file
-     * @return map with key information.
+     * @return Keygen with key fetched
      */
-    public static HashMap<String, String> fetchPrivate(String file) {
-        HashMap<String, String> ret = new HashMap<>();
-        Scanner lukija = openFile(file);
-        if (lukija != null) {
-            if(lukija.nextLine().equals(javarsa.JavaRSA.PRIVATE_FILE_BEGIN)) {
-                StringBuilder str = new StringBuilder();
-                String rivi = lukija.nextLine();
-                while(!rivi.equals(javarsa.JavaRSA.PRIVATE_FILE_END)) {
-                    str.append(rivi);
-                    rivi = lukija.nextLine();
-                }
-                ret.put("key", str.toString());
-            }
-            
-            lukija.close();
-        }
-
-        return ret;
+    public static Keygen fetchPrivate(String file) {
+        Keygen keygen = new Keygen(128);
+        return fetchPrivate(file, keygen);
     }
 
     /**
-     * Fetches public key from file
+     * Fetches private key from file to Keygen given as parameter
      *
-     * @param file
-     * @return String containing public key
+     * @param file file to read from
+     * @param keygen Keygen to insert key into
+     * @return map with key information.
      */
-    public static String fetchPublic(String file) {
-        String ret = "";
+    public static Keygen fetchPrivate(String file, Keygen keygen) {
         Scanner lukija = openFile(file);
         if (lukija != null) {
-            lukija.useDelimiter("\\Z");
-            ret = lukija.next();
+            if (lukija.nextLine().equals(javarsa.JavaRSA.PRIVATE_FILE_BEGIN)) {
+                StringBuilder str = new StringBuilder();
+                String rivi = lukija.nextLine();
+                while (!rivi.equals(javarsa.JavaRSA.PRIVATE_FILE_END)) {
+                    str.append(rivi);
+                    rivi = lukija.nextLine();
+                }
+                keygen.setPrivateKey(Base64.decode(str.toString()));
+            }
+
             lukija.close();
         }
-        
-        return ret;
+
+        return keygen;
+    }
+
+    /**
+     * Fetches public key from file to new Keygen
+     *
+     * @param file
+     * @return Keygen with key inside
+     */
+    public static Keygen fetchPublic(String file) {
+        Keygen keygen = new Keygen(128);
+        return fetchPublic(file, keygen);
+    }
+
+    /**
+     * Fetches public key from file to given Keygen
+     *
+     * @param file file to use
+     * @param keygen Keygen to insert keys to
+     * @return Keygen containing public key
+     */
+    public static Keygen fetchPublic(String file, Keygen keygen) {
+        Scanner lukija = openFile(file);
+        if (lukija != null) {
+            lukija.useDelimiter(" ");
+            keygen.setPublicKey(BigInteger.valueOf(Integer.parseInt(lukija.next())));
+            lukija.useDelimiter("\\Z");
+            String modulus = lukija.next();
+            modulus = modulus.replace(" ", "");
+            keygen.setModulus(Base64.decode(modulus));
+            lukija.close();
+        }
+
+        return keygen;
     }
 
     /**

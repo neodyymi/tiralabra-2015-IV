@@ -83,12 +83,30 @@ public class Keygen {
         return publicKey;
     }
 
+    public void setPublicKey(BigInteger publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public void setPrivateKey(BigInteger privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    public void setModulus(BigInteger modulus) {
+        this.modulus = modulus;
+    }
+    
+    
+
     @Override
     public String toString() {
         return ""
                 + "Modulus : " + this.modulus + "\n"
+                + "in Base64 : " + Base64.encode(this.modulus) + "\n"
+                + "in hexadecimal : " + this.modulus.toString(16) + "\n"
                 + "Private : " + this.privateKey + "\n"
-                + "Public  : " + this.publicKey;
+                + "in Base64 : " + Base64.encode(this.privateKey) + "\n"
+                + "in hexadecimal : " + this.privateKey.toString(16) + "\n"
+                + "Public : " + this.publicKey;
     }
 
 }
