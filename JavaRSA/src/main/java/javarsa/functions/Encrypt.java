@@ -6,6 +6,7 @@
 package javarsa.functions;
 
 import java.math.BigInteger;
+import javarsa.Timer;
 import javax.crypto.IllegalBlockSizeException;
 
 /**
@@ -22,6 +23,7 @@ public class Encrypt {
      * @return Encrypted material as BigInteger
      */
     public static BigInteger encrypt(Keygen keygen, String message) throws IllegalBlockSizeException {
+        Timer.setStartTime();
         byte[] bytes = message.getBytes();
         BigInteger bigInt = new BigInteger(bytes);
         System.out.println(bigInt.bitLength() +" >< "+ keygen.getModulus().bitLength());
@@ -30,6 +32,7 @@ public class Encrypt {
             throw new IllegalBlockSizeException("Message too long! (Message bitsize larger than modulus.)");
         }
         bigInt = bigInt.modPow(keygen.getPublicKey(), keygen.getModulus());
+        Timer.stopTime();
         return bigInt;
     }
 }

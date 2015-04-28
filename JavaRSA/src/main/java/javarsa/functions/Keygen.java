@@ -7,6 +7,7 @@ package javarsa.functions;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import javarsa.Timer;
 
 /**
  * RSA key generator
@@ -45,6 +46,7 @@ public class Keygen {
      *
      */
     public void keygen() {
+        Timer.setStartTime();
         do {
             p = BigInteger.probablePrime(size / 2, r);
             q = BigInteger.probablePrime(size / 2, r);
@@ -54,6 +56,7 @@ public class Keygen {
         } while (m.gcd(publicKey).intValue() > 1);
 
         privateKey = publicKey.modInverse(m);
+        Timer.stopTime();
     }
 
     /**
@@ -94,8 +97,6 @@ public class Keygen {
     public void setModulus(BigInteger modulus) {
         this.modulus = modulus;
     }
-    
-    
 
     @Override
     public String toString() {
@@ -106,7 +107,8 @@ public class Keygen {
                 + "Private : " + this.privateKey + "\n"
                 + "in Base64 : " + Base64.encode(this.privateKey) + "\n"
                 + "in hexadecimal : " + this.privateKey.toString(16) + "\n"
-                + "Public : " + this.publicKey;
+                + "Public : " + this.publicKey + "\n"
+                + "Time taken : " + Timer.getTimeInMilliseconds() + "ms";
     }
 
 }

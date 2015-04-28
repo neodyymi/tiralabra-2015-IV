@@ -6,6 +6,7 @@
 package javarsa.functions;
 
 import java.math.BigInteger;
+import javarsa.Timer;
 
 /**
  *
@@ -21,6 +22,7 @@ public class Decrypt {
      * @return decrypted material
      */
     public static String decrypt(Keygen keygen, BigInteger encrypted) {
+        Timer.setStartTime();
         byte[] bytes;
 //        bytes = encrypted.getBytes();
         BigInteger bigInt;
@@ -29,6 +31,7 @@ public class Decrypt {
         bigInt = encrypted.modPow(keygen.getPrivateKey(), keygen.getModulus());
         bytes = bigInt.toByteArray();
         String message = new String(bytes);
+        Timer.stopTime();
         return message;
     }
 }

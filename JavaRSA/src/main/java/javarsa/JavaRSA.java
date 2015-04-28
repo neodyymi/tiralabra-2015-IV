@@ -75,7 +75,7 @@ public class JavaRSA {
         System.out.print("Decrypt message: ");
         String encrypted = scanner.nextLine();
         ret = Decrypt.decrypt(key, Base64.decode(encrypted));
-        System.out.println(ret);
+        System.out.println(ret + "\n" + "Time taken : " + Timer.getTimeInMilliseconds() + " ms");
     }
 
     private static void encryptCmd(Scanner scanner, Keygen key) {
@@ -88,7 +88,7 @@ public class JavaRSA {
             bigInt = null;
             Logger.getLogger(JavaRSA.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println(Base64.encode(bigInt));
+        System.out.println(Base64.encode(bigInt) + "\n" + "Time taken : " + Timer.getTimeInMilliseconds() + " ms");
     }
 
     private static Keygen keygenCmd(Scanner scanner, Keygen key) throws NumberFormatException {
