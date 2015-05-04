@@ -25,8 +25,9 @@ public class JavaRSA {
 
     public static final String PRIVATE_FILE_BEGIN = "-----BEGIN RSA PRIVATE KEY-----";
     public static final String PRIVATE_FILE_END = "-----END RSA PRIVATE KEY-----";
-        public static final String PUBLIC_FILE_BEGIN = "-----BEGIN RSA PUBLIC KEY-----";
+    public static final String PUBLIC_FILE_BEGIN = "-----BEGIN RSA PUBLIC KEY-----";
     public static final String PUBLIC_FILE_END = "-----END RSA PUBLIC KEY-----";
+    public static Keygen key;
 
     /**
      * Main accepts parameters that make the program perform different
@@ -36,7 +37,7 @@ public class JavaRSA {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Keygen key = null;
+        key = null;
         BigInteger bigInt;
         String ret;
         Help.help();
@@ -53,10 +54,13 @@ public class JavaRSA {
                     decryptCmd(scanner, key);
                     break;
                 case "import":
-                    importCmd(scanner, key);
+                    key = importCmd(scanner, key);
                     break;
                 case "export":
                     exportCmd(scanner, key);
+                    break;
+                case "show":
+                    System.out.println(key.toString());
                     break;
                 case "help":
                     Help.help();
@@ -100,8 +104,35 @@ public class JavaRSA {
         return key;
     }
 
-    private static void importCmd(Scanner scanner, Keygen key) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static Keygen importCmd(Scanner scanner, Keygen key) {
+//        System.out.println("What is the bitsize of the key to be imported?");
+//        int size = Integer.parseInt(scanner.nextLine());
+        System.out.println("What do you want to import? (private, public)");
+        String cmd = scanner.nextLine();
+//        Keygen key = new Keygen(size);
+        switch (cmd) {
+            case "private":
+                System.out.println("Filename to use:");
+                cmd = scanner.nextLine();
+                if (key == null) {
+                    key = javarsa.io.ReadFile.fetchPrivate(cmd);
+                } else {
+                    key = javarsa.io.ReadFile.fetchPrivate(cmd, key);
+                }
+                break;
+            case "public":
+                System.out.println("Filename to use:");
+                cmd = scanner.nextLine();
+                if (key == null) {
+                    key = javarsa.io.ReadFile.fetchPublic(cmd);
+                } else {
+                    key = javarsa.io.ReadFile.fetchPublic(cmd, key);
+                }
+                break;
+            default:
+                break;
+        }
+        return key;
     }
 
     private static void exportCmd(Scanner scanner, Keygen key) {

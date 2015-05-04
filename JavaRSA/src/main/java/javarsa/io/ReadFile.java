@@ -50,6 +50,7 @@ public class ReadFile {
                     str.append(rivi);
                     rivi = lukija.nextLine();
                 }
+                System.out.println(str.toString());
                 keygen.setPrivateKey(Base64.decode(str.toString()));
             }
 
@@ -85,6 +86,7 @@ public class ReadFile {
             lukija.useDelimiter("\\Z");
             String modulus = lukija.next();
             modulus = modulus.replace(" ", "");
+            System.out.println(modulus);
             keygen.setModulus(Base64.decode(modulus));
             lukija.close();
         }
