@@ -44,7 +44,7 @@ public class WriteFile {
                 fw.write(pKey.substring(i, loppu));
                 fw.write("\n");
             }
-            fw.write("\n" + javarsa.JavaRSA.PRIVATE_FILE_END);
+            fw.write(javarsa.JavaRSA.PRIVATE_FILE_END);
             fw.close();
             System.out.println(pKey + "\nWritten to " + file);
         } catch (IOException ex) {
