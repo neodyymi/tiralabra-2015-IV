@@ -31,17 +31,15 @@ public class JavaRSA {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Map<String,Command> commands = init(scanner);
+        Map<String, Command> commands = init(scanner);
         key = null;
         commands.get("help").run();
         String cmd = scanner.nextLine();
         while (!cmd.equals("quit")) {
-            if(commands.containsKey(cmd)) {
+            if (commands.containsKey(cmd)) {
                 commands.get(cmd).run();
-            } else {
-                commands.get("help").run();
             }
-            
+            commands.get("help").run();
             cmd = scanner.nextLine();
         }
     }

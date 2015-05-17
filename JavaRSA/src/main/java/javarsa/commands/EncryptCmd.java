@@ -40,8 +40,7 @@ public class EncryptCmd implements Command {
         try {
             bigInt = Encrypt.encrypt(key, message);
         } catch (IllegalBlockSizeException ex) {
-            bigInt = null;
-            Logger.getLogger(JavaRSA.class.getName()).log(Level.SEVERE, null, ex);
+            return;
         }
         System.out.println(Base64.encode(bigInt) + "\n" + "Time taken : " + Timer.getTimeInMilliseconds() + " ms");
     }

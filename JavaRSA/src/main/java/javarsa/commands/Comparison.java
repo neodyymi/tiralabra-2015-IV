@@ -6,6 +6,7 @@
 package javarsa.commands;
 
 import java.math.BigInteger;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,20 @@ public class Comparison implements Command {
 
     @Override
     public void run() {
+        System.out.println("What do you want to compare?\n"
+                + "\"1\" different size keys, or\n"
+                + "\"2\" different message sizes.\n"
+                + "(Choose 1 or 2)");
+        String cmd = scanner.nextLine();
+        if (cmd.contains("1")) {
+            keySizeComparison();
+        } else if (cmd.contains("2")) {
+            messageSizeComparison();
+        }
+
+    }
+
+    private void keySizeComparison() throws NumberFormatException {
         Keygen keygen;
         String message = "testiviesti";
         BigInteger encrypted = null;
@@ -38,7 +53,11 @@ public class Comparison implements Command {
 
         System.out.println("This comparison will do timed runs for keys with bitsize 128-4096\n"
                 + "How many iterations do you want to do? (One iteration takes a few seconds.)");
-        final int iterations = Integer.parseInt(scanner.nextLine());
+        String cmd = scanner.nextLine();
+        if (cmd.equals("")) {
+            return;
+        }
+        final int iterations = Integer.parseInt(cmd);
 
         for (int i = 0; i < 6; i++) {
             keyTime[i] = 0;
@@ -73,6 +92,57 @@ public class Comparison implements Command {
                     + ((double) Math.round(100 * (encryptTime[i] / iterations)) / 100) + "ms to encrypt message,\n"
                     + ((double) Math.round(100 * (decryptTime[i] / iterations)) / 100) + "ms to decrypt message.\n");
 
+        }
+    }
+
+    private void messageSizeComparison() {
+        System.out.println("Select key size(128,256,512,1024...)");
+        String cmd = scanner.nextLine();
+        if (cmd.equals("")) {
+            return;
+        }
+        int keySize = Integer.parseInt(cmd);
+        Keygen keygen = new Keygen(keySize);
+        keygen.keygen();
+        double[] encryptTime = new double[6];
+        double[] decryptTime = new double[6];
+        String[] messages = new String[6];
+        int[] messageBitLength = new int[6];
+        BigInteger encrypted = null;
+        String decrypted;
+        System.out.println("This comparison will do timed runs encrypting 5 different length random messages.\n"
+                + "How many iterations do you want to do? (Depending on bitsize, one iteration will take up to several seconds.");
+        cmd = scanner.nextLine();
+        if (cmd.equals("")) {
+            return;
+        }
+        int iterations = Integer.parseInt(cmd);
+        for (int i = 0; i < 5; i++) {
+            BigInteger message = new BigInteger((keySize - 1) / (6 - i), new Random());
+            messages[i] = message.toString(16);
+            messageBitLength[i] = message.bitLength();
+            for (int j = 0; j < iterations; j++) {
+                javarsa.Timer.setStartTime();
+                try {
+                    encrypted = Encrypt.encrypt(keygen, messages[i]);
+                } catch (IllegalBlockSizeException ex) {
+                    System.out.println("Message size was too large");
+                }
+                encryptTime[i] += javarsa.Timer.getTimeInMilliseconds();
+
+                javarsa.Timer.setStartTime();
+                decrypted = Decrypt.decrypt(keygen, encrypted);
+                if (!decrypted.equals(messages[i])) {
+                    System.out.println("Erroneous decryption");
+                }
+                decryptTime[i] += javarsa.Timer.getTimeInMilliseconds();
+                System.out.println("Iteration " + ((j + 1) + (i * iterations)) + "/" + (5 * iterations) + " done.");
+            }
+        }
+        for (int i = 0; i < 5; i++) {
+            System.out.println("Message with bitsize " + messageBitLength[i] + " took an average of\n"
+                    + ((double) Math.round(100 * (encryptTime[i] / iterations)) / 100) + "ms to encrypt message,\n"
+                    + ((double) Math.round(100 * (decryptTime[i] / iterations)) / 100) + "ms to decrypt message.\n");
         }
 
     }
