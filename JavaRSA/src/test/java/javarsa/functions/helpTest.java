@@ -36,7 +36,7 @@ public class helpTest {
     @Test
     public void helpPrintsToSystemOut() {
         Help.help();
-        assertEquals("Valid commands are: keygen, encrypt, decrypt, import and export\n", output.toString());
+        assertEquals("Valid commands are: keygen, encrypt, decrypt, import, export and comparison\n", output.toString());
     }
 
 }
