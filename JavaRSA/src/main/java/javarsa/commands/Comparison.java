@@ -16,6 +16,7 @@ import javarsa.functions.Keygen;
 import javax.crypto.IllegalBlockSizeException;
 
 /**
+ * Testing with time requirement for different variables in the RSA-encryption.
  *
  * @author vrsaari
  */
@@ -42,6 +43,12 @@ public class Comparison implements Command {
 
     }
 
+    /**
+     * Compares effect of key bitsize when creating the keys, as well as
+     * encrypting and decrypting with various size keys.
+     *
+     * @throws NumberFormatException
+     */
     private void keySizeComparison() throws NumberFormatException {
         Keygen keygen;
         String message = "testiviesti";
@@ -95,6 +102,9 @@ public class Comparison implements Command {
         }
     }
 
+    /**
+     * Compares effect of message size when encrypting and decrypting.
+     */
     private void messageSizeComparison() {
         System.out.println("Select key size(128,256,512,1024...)");
         String cmd = scanner.nextLine();

@@ -25,7 +25,7 @@ public class JavaRSA {
 
     /**
      * Main accepts parameters that make the program perform different
-     * functions. To-do: Ability to use external keys.
+     * functions.
      *
      * @param args the command line arguments
      */
